@@ -1,0 +1,10 @@
+{
+    "name": "azuriom/trad",
+    "type": "azuriom-plugin",
+    "description": "Trad plugin for Azuriom",
+    "autoload": {
+        "psr-4": {
+            "Azuriom\\Plugin\\Trad\\": "src/"
+        }
+    }
+}

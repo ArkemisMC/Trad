@@ -1,0 +1,15 @@
+{
+    "id": "trad",
+    "name": "Trad",
+    "description": "Trad for Arkemis",
+    "version": "1.0.0",
+    "url": "https://arkemis.fr",
+    "authors": [
+        "Elikill58"
+    ],
+    "azuriom_api": "1.0.0",
+    "providers": [
+        "\\Azuriom\\Plugin\\Trad\\Providers\\RouteServiceProvider",
+        "\\Azuriom\\Plugin\\Trad\\Providers\\TradServiceProvider"
+    ]
+}
