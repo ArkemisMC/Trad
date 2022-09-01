@@ -54,25 +54,25 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="msg_value_other">{{ trans('trad::public.msgs.msg_value_other') }}</label>
-                                <input type="textarea" class="form-control" id="msg_value_other" name="msg_value_other" readonly>
+                                <textarea class="form-control" id="msg_value_other" name="msg_value_other" readonly></textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="msg_value">{{ trans('trad::public.msgs.msg_value') }}</label>
                                 @if(Auth::user()->can('trad.accept'))
                                     <p style="display: flex;">
-                                        <input type="textarea" class="form-control" id="msg_value" name="msg_value">
+                                        <textarea class="form-control" id="msg_value" name="msg_value"></textarea>
                                         <button class="btn btn-success" onclick="saveMessage()">
                                             <i class="bi bi-save"></i>
                                         </button>
                                     </p>
                                 @else
-                                    <input type="textarea" class="form-control" id="msg_value" name="msg_value" readonly>
+                                    <textarea class="form-control" id="msg_value" name="msg_value" readonly></textarea>
                                 @endif
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="msg_suggestion">{{ trans('trad::public.msgs.msg_suggestion') }}</label>
                                 <p style="display: flex;">
-                                    <input type="textarea" class="form-control" id="msg_suggestion" name="msg_suggestion">
+                                    <textarea class="form-control" id="msg_suggestion" name="msg_suggestion"></textarea>
                                     <button class="btn btn-success" onclick="saveSuggestion()">
                                         <i class="bi bi-save"></i>
                                     </button>
@@ -93,6 +93,14 @@
 
 @push('footer-scripts')
     <script type="text/javascript">
+        function getMessage(key) {
+            return fixFormatting(document.getElementById(key).value);
+        }
+
+        function fixFormatting(msg) {
+            return msg == undefined ? "" : msg.replace("\n", "%n%");
+        }
+
         let msg_key = "{{ $msg_key }}";
         function selectMessage(key) {
             if(key == "")
@@ -105,7 +113,7 @@
                 loading.style.visibility = "hidden";
                 let d = response.data;
                 document.getElementById("msg_key").value = d.msg_key;
-                document.getElementById("msg_value").value = d.msg_value;
+                document.getElementById("msg_value").value = d.msg_value.replace("%n%", "\n");
                 document.getElementById("msg_suggestion").value = d.msg_suggestion == undefined ? "" : d.msg_suggestion;
                 document.getElementById("comments").value = d.comments;
 
@@ -116,19 +124,19 @@
 
         @if(Auth::user()->can('trad.accept'))
             function saveMessage() {
-                axios.post('{{ route("trad.save") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: document.getElementById("msg_value").value }).then((response) => {
+                axios.post('{{ route("trad.save") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: getMessage("msg_value") }).then((response) => {
                     selectMessage(msg_key);
                 })
             }
             function acceptSuggestion() {
-                axios.post('{{ route("trad.accept") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: document.getElementById("msg_value").value, msg_suggestion: document.getElementById("msg_suggestion").value }).then((response) => {
+                axios.post('{{ route("trad.accept") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: getMessage("msg_value"), msg_suggestion: getMessage("msg_suggestion") }).then((response) => {
                     selectMessage(msg_key);
                 })
             }
         @endif
 
         function saveSuggestion() {
-            axios.post('{{ route("trad.suggestion") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_suggestion: document.getElementById("msg_suggestion").value }).then((response) => {
+            axios.post('{{ route("trad.suggestion") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_suggestion: getMessage("msg_suggestion") }).then((response) => {
                 selectMessage(msg_key);
             })
         }
