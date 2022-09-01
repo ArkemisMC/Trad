@@ -2,5 +2,6 @@
 
 return [
     'admin' => 'Gérer le plugins de traduction',
-    'public' => 'Être traducteur'
+    'public' => 'Proposer des suggestions pour les traductions',
+    'accept' => 'Accepter des suggestions de traducteurs'
 ];

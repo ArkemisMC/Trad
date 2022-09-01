@@ -36,6 +36,7 @@ class TradServiceProvider extends BasePluginServiceProvider
         Permission::registerPermissions([
             'trad.admin' => 'trad::permissions.admin',
             'trad.public' => 'trad::permissions.public',
+            'trad.accept' => 'trad::permissions.accept',
         ]);
     }
 

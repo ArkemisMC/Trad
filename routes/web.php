@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('can:internalstats.public')->group(function () {
+Route::middleware('can:trad.public')->group(function () {
     Route::get('/', [PublicController::class, 'index'])->name('index');
+    Route::get('/{lang_id}/messages', [PublicController::class, 'show'])->name('message');
+    Route::get('/{lang_id}/messages/{msg_key}', [PublicController::class, 'show2'])->name('message-specific');
+    Route::post('/fetch', [PublicController::class, 'fetch'])->name('fetch');
+    Route::post('/update/suggestion', [PublicController::class, 'suggestion'])->name('suggestion');
+});
+
+Route::middleware('can:trad.accept')->group(function () {
+    Route::post('/update/accept', [PublicController::class, 'accept'])->name('accept');
+    Route::post('/update/save', [PublicController::class, 'save'])->name('save');
 });
