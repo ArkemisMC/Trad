@@ -7,6 +7,12 @@
         .message {
             cursor: pointer;
         }
+        .empty-message {
+            color: red;
+        }
+        .checked-message {
+            color: green;
+        }
         .form-right {
             width: 50%;
             padding-left: 1%;
@@ -23,14 +29,17 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body rounded">
-                    <h3 class="mb-3">{{ $lang->lang_name }}</h3>
+                    <h3 class="mb-3">{{ $lang->lang_name }} <span id="loading" style="visibility: hidden; float: right;">{{ trans('messages.loading') }}</span></h3>
                     <div class="row">
                         <div class="col-5">
+                            <?php
+                            ?>
                             @foreach($msgs as $msg)
-                                <p class="message" onclick="selectMessage('{{ $msg->msg_key }}')" id="left-msg-{{ $msg->msg_key }}">
+                                <p class="message @if($msg->msg_key == $msg->msg_value) empty-message @endif  @if($msg->comments == '✔') checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')" id="left-msg-{{ $msg->msg_key }}">
                                     {{ $msg->msg_value }}
                                 </p>
                             @endforeach
+                            {{ $pagination->links() }}
                         </div>
                         <div class="col-7">
                             <div class="mb-3" style="display: flex;">
@@ -74,7 +83,6 @@
                                     {{ trans('trad::public.msgs.accept') }}
                                 </button>
                             @endif
-                            <p id="loading" style="visibility: hidden;">{{ trans('messages.loading') }}</p>
                         </div>
                     </div>
                 </div>

@@ -41,9 +41,12 @@ class PublicController extends Controller
 
     public function show2($lang_id, $msg_key) {
         $this->configDatabase();
+        $perPage = 15;
+        $page = isset(request()->page) ? request()->page - 1 : 0;
         $lang = Langs::on("messages")->where("id", "=", $lang_id)->first();
-        $msgs = Messages::on("messages")->table($lang->table_name)->limit(15)->get();
-        return view('trad::public.message', compact('lang', 'msgs', 'msg_key'));
+        $msgs = Messages::on("messages")->table($lang->table_name)->orderByRaw("IF(msg_key = msg_value OR msg_key = '', msg_key, '') DESC, IF(comments != '✔', '', msg_key), msg_key")->offset($page * $perPage)->limit($perPage)->get();
+        $pagination = Messages::on("messages")->table($lang->table_name)->orderByRaw("IF(msg_key = msg_value OR msg_key = '', msg_key, '') DESC, msg_key")->paginate($perPage);
+        return view('trad::public.message', compact('lang', 'msgs', 'msg_key', 'pagination'));
     }
 
     public function fetch(Request $request) {
