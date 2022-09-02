@@ -35,8 +35,8 @@
                             <?php
                             ?>
                             @foreach($msgs as $msg)
-                                <p class="message @if($msg->msg_key == $msg->msg_value) empty-message @endif  @if($msg->comments == '✔') checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')" id="left-msg-{{ $msg->msg_key }}">
-                                    {{ $msg->msg_value }}
+                                <p class="message @if($msg->msg_key == $msg->msg_value || ($msg->msg_suggestion == null && $msg->msg_value == null)) empty-message @endif  @if($msg->comments == '✔') checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')" id="left-msg-{{ $msg->msg_key }}">
+                                    {{ $msg->msg_value ?? $msg->msg_suggestion ?? $msg->msg_key }}
                                 </p>
                             @endforeach
                             {{ $pagination->links() }}
@@ -97,6 +97,10 @@
             return fixFormatting(document.getElementById(key).value);
         }
 
+        function parseFormatting(msg) {
+            return msg == undefined ? "" : msg.replace("%n%", "\n");
+        }
+
         function fixFormatting(msg) {
             return msg == undefined ? "" : msg.replace("\n", "%n%");
         }
@@ -113,8 +117,9 @@
                 loading.style.visibility = "hidden";
                 let d = response.data;
                 document.getElementById("msg_key").value = d.msg_key;
-                document.getElementById("msg_value").value = d.msg_value.replace("%n%", "\n");
-                document.getElementById("msg_suggestion").value = d.msg_suggestion == undefined ? "" : d.msg_suggestion;
+                document.getElementById("msg_value").value = parseFormatting(d.msg_value)
+                document.getElementById("msg_value_other").value = parseFormatting(d.msg_value_other);
+                document.getElementById("msg_suggestion").value = parseFormatting(d.msg_suggestion);
                 document.getElementById("comments").value = d.comments;
 
                 document.getElementById("left-msg-" + key).innerHTML = d.msg_value;
