@@ -16,7 +16,7 @@ class PublicController extends Controller
         return Langs::on("messages")->where("id", setting('trad.default_lang_id'))->first();
     }
 
-    public function configDatabase() {
+    public static function configDatabase() {
         $dbType = config("database.default");
         config([
             'database.connections.messages.driver' => 'mysql',
