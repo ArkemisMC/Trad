@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'translate' => 'Traduire',
     'langs' => [
         'title' => 'Les langues',
         'information' => 'Langues disponible:'

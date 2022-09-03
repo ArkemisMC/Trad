@@ -31,6 +31,7 @@ class TradServiceProvider extends BasePluginServiceProvider
 
         $this->registerRouteDescriptions();
 
+        $this->registerUserNavigation();
         $this->registerAdminNavigation();
 
         Permission::registerPermissions([
@@ -51,6 +52,16 @@ class TradServiceProvider extends BasePluginServiceProvider
             'trad.index' => trans('trad::messages.title'),
         ];
     }
+
+protected function userNavigation() {
+    return [
+        'trad' => [
+            'route' => 'trad.index',
+            'name' => trans('trad::public.translate'),
+            'permission' => 'trad.public'
+        ],
+    ];
+}
 
     /**
      * Return the admin navigations routes to register in the dashboard.

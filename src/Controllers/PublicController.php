@@ -81,6 +81,8 @@ class PublicController extends Controller
                 'msg_value' => $request->msg_key
             ]);
             $msg = Messages::on("messages")->table($lang->table_name)->where("msg_key", $request->msg_key)->first();
+            $possibleDefMsg = Messages::on("messages")->table($this->getDefaultLang()->table_name)->where("msg_key", $request->msg_key)->get();
+            $msg->msg_value_other = count($possibleDefMsg) >= 1 ? $possibleDefMsg[0]->msg_value : "";
         }
         return json_encode($msg);
     }
