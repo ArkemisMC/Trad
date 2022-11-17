@@ -29,7 +29,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body rounded">
-                    <h3 class="mb-3">{{ $lang->lang_name }} <span id="loading" style="visibility: hidden; float: right;">{{ trans('messages.loading') }}</span></h3>
+                    <h3 class="mb-3">
+                        {{ $lang->lang_name }}
+                        <label class="form-label" for="auto-next" style="font-size: initial;">Auto-next</label>
+                        <input type="checkbox" id="auto-next" name="auto-next" checked>
+                        <span style="float: right;">{{ $amountTranslated . "/" . $pagination->total() }}</span>
+                        <span id="loading" style="visibility: hidden; float: right; margin-right: 8px;">{{ trans('messages.loading') }}</span>
+                    </h3>
                     <div class="row">
                         <div class="col-5">
                             <?php
@@ -106,6 +112,20 @@
         }
 
         let msg_key = "{{ $msg_key }}";
+        function nextMessage(oldKey) {
+            if(document.getElementById("auto-next").value) {
+                let leftMsg = document.getElementById("left-msg-" + oldKey);
+                if(leftMsg != undefined)
+                    leftMsg.remove();
+                let possibleMsg = document.querySelectorAll('*[id^="left-msg"]');
+                if(possibleMsg.length > 0) {
+                    selectMessage(possibleMsg[0].id.replace("left-msg-", ""));
+                }
+            } else {
+                selectMessage(oldKey);
+            }
+        }
+
         function selectMessage(key) {
             if(key == "")
                 return;
@@ -122,7 +142,9 @@
                 document.getElementById("msg_suggestion").value = parseFormatting(d.msg_suggestion);
                 document.getElementById("comments").value = d.comments;
 
-                document.getElementById("left-msg-" + key).innerHTML = d.msg_value;
+                let leftMsg = document.getElementById("left-msg-" + key);
+                if(leftMsg != undefined && d.msg_value != "" && d.msg_value != d.msg_key)
+                    leftMsg.remove();
 
                 document.getElementById("suggestion-accept").style.visibility = (fixFormatting(d.msg_suggestion) == "" ? "hidden" : null);
             })
@@ -132,19 +154,19 @@
         @if(Auth::user()->can('trad.accept'))
             function saveMessage() {
                 axios.post('{{ route("trad.save") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: getMessage("msg_value") }).then((response) => {
-                    selectMessage(msg_key);
+                    nextMessage(msg_key);
                 })
             }
             function acceptSuggestion() {
                 axios.post('{{ route("trad.accept") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_value: getMessage("msg_value"), msg_suggestion: getMessage("msg_suggestion") }).then((response) => {
-                    selectMessage(msg_key);
+                    nextMessage(msg_key);
                 })
             }
         @endif
 
         function saveSuggestion() {
             axios.post('{{ route("trad.suggestion") }}', { msg_key: msg_key, lang_id: '{{ $lang->id }}', msg_suggestion: getMessage("msg_suggestion") }).then((response) => {
-                selectMessage(msg_key);
+                nextMessage(msg_key);
             })
         }
 

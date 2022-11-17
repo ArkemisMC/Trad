@@ -51,11 +51,14 @@ class PublicController extends Controller
         $lang = null;
         $msgs = null;
         $pagination = null;
+        $amountTranslated = 0;
         if($defLang->id == $lang_id) {
             $lang = $defLang;
             $ordering = "IF(msg_key = msg_value OR msg_key = '', msg_key, '') DESC, IF(comments != '✔', '', msg_key), msg_key";
-            $msgs = Messages::on("messages")->table($lang->table_name)->orderByRaw($ordering)->offset($page * $perPage)->limit($perPage)->get();
-            $pagination = Messages::on("messages")->table($lang->table_name)->orderByRaw($ordering)->paginate($perPage);
+            $msgBuilder = Messages::on("messages")->table($lang->table_name)->orderByRaw($ordering);
+            $pagination = $msgBuilder->paginate($perPage);
+            $msgs = $msgBuilder->offset($page * $perPage)->limit($perPage)->get();
+            $amountTranslated = count(Messages::on("messages")->table($lang->table_name)->where("msg_key", "!=", "msg_value")->get());
         } else {
             $lang = Langs::on("messages")->where("id", $lang_id)->first();
             $tableA = $defLang->table_name;
@@ -64,8 +67,9 @@ class PublicController extends Controller
             $beginMsgBuilder = Messages::on("messages")->table($tableA)->leftJoin($tableB, $tableA . '.msg_key', '=', $tableB . '.msg_key')->orderByRaw($ordering);
             $pagination = $beginMsgBuilder->paginate($perPage);
             $msgs = $beginMsgBuilder->offset($page * $perPage)->limit($perPage)->select($tableA . '.msg_key as msg_key', $tableB .'.msg_value')->get();
+            $amountTranslated = count(Messages::on("messages")->table($tableB)->where("msg_key", "!=", "msg_value")->get());
         }
-        return view('trad::public.message', compact('lang', 'msgs', 'msg_key', 'pagination', 'defLang'));
+        return view('trad::public.message', compact('lang', 'msgs', 'msg_key', 'pagination', 'defLang', 'amountTranslated'));
     }
 
     public function fetch(Request $request) {
