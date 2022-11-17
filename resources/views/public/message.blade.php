@@ -61,7 +61,7 @@
                                 @if(Auth::user()->can('trad.accept'))
                                     <p style="display: flex;">
                                         <textarea class="form-control" id="msg_value" name="msg_value"></textarea>
-                                        <button class="btn btn-success" onclick="saveMessage()">
+                                        <button class="btn btn-success" style="margin-left: 8px;" onclick="saveMessage()">
                                             <i class="bi bi-save"></i>
                                         </button>
                                     </p>
@@ -73,13 +73,13 @@
                                 <label class="form-label" for="msg_suggestion">{{ trans('trad::public.msgs.msg_suggestion') }}</label>
                                 <p style="display: flex;">
                                     <textarea class="form-control" id="msg_suggestion" name="msg_suggestion"></textarea>
-                                    <button class="btn btn-success" onclick="saveSuggestion()">
+                                    <button class="btn btn-success" style="margin-left: 8px;" onclick="saveSuggestion()">
                                         <i class="bi bi-save"></i>
                                     </button>
                                 </p>
                             </div>
                             @if(Auth::user()->can('trad.accept'))
-                                <button class="btn btn-success" onclick="acceptSuggestion()">
+                                <button id="suggestion-accept" class="btn btn-success" onclick="acceptSuggestion()">
                                     {{ trans('trad::public.msgs.accept') }}
                                 </button>
                             @endif
@@ -123,6 +123,8 @@
                 document.getElementById("comments").value = d.comments;
 
                 document.getElementById("left-msg-" + key).innerHTML = d.msg_value;
+
+                document.getElementById("suggestion-accept").style.visibility = (fixFormatting(d.msg_suggestion) == "" ? "hidden" : null);
             })
         }
         setTimeout(() => selectMessage(msg_key), 100);
