@@ -13,16 +13,6 @@ class Messages extends Model {
      *
      * @var array
      */
-    protected $fillable = ['msg_key', 'msg_value', 'msg_suggestion', 'comments', 'suggestionner', 'suggestion_accepter', 'creation'];
-
-    public function setTable($tableName)
-    {
-        $this->table = $tableName;
-    }
-
-    public function scopeTable($query, $tableName)
-    {
-        $query->getQuery()->from = $tableName;
-        return $query;
-    }
+    protected $fillable = ['id', 'msg_key', 'msg_fr', 'msg_en', 'msg_es', 'msg_de', 'comments'];
+    
 }

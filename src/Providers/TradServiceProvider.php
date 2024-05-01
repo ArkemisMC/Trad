@@ -53,15 +53,15 @@ class TradServiceProvider extends BasePluginServiceProvider
         ];
     }
 
-protected function userNavigation() {
-    return [
-        'trad' => [
-            'route' => 'trad.index',
-            'name' => trans('trad::public.translate'),
-            'permission' => 'trad.public'
-        ],
-    ];
-}
+    protected function userNavigation() {
+        return [
+            'trad' => [
+                'route' => 'trad.index',
+                'name' => trans('trad::public.translate'),
+                'permission' => 'trad.public'
+            ],
+        ];
+    }
 
     /**
      * Return the admin navigations routes to register in the dashboard.

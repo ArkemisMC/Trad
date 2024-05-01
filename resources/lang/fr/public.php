@@ -9,9 +9,7 @@ return [
     'msgs' => [
         'title' => 'Messages',
         'msg_key' => 'Clé',
-        'msg_value_other' => 'Valeur dans l\'autre langue',
-        'msg_value' => 'Valeur',
-        'msg_suggestion' => 'Suggestion',
+        'msg_lang' => 'Valeur en :lang',
         'comments' => 'Commentaire',
         'accept' => 'Accepter la suggestion'
     ]
