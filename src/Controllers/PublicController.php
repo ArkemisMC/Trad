@@ -36,7 +36,7 @@ class PublicController extends Controller
     public function index() {
         $this->configDatabase();
         $langs = Langs::on("messages")->get();
-        $messages = Messages::on("messages")->get();
+        $messages = Messages::on("messages")->orderByRaw("IF(msg_key = msg_en OR ((msg_en = '' OR msg_en is null) AND msg_fr != ''), msg_key, '') ASC, IF(comments != '✔', '', msg_key), msg_key")->get();
         $msg_key = "";
         return view('trad::public.index', compact('langs', 'messages', 'msg_key'));
     }
@@ -44,7 +44,7 @@ class PublicController extends Controller
     public function show($msg_key) {
         $this->configDatabase();
         $langs = Langs::on("messages")->get();
-        $messages = Messages::on("messages")->get();
+        $messages = Messages::on("messages")->orderByRaw("IF(msg_key = msg_en OR ((msg_en = '' OR msg_en is null) AND msg_fr != ''), msg_key, '') DESC, IF(comments != '✔', '', msg_key), msg_key")->get();
         return view('trad::public.index', compact('langs', 'messages', 'msg_key'));
     }
 
