@@ -34,17 +34,13 @@ class PublicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $this->configDatabase();
-        $langs = Langs::on("messages")->get();
-        $messages = Messages::on("messages")->orderByRaw("IF(msg_key = msg_en OR ((msg_en = '' OR msg_en is null) AND msg_fr != ''), msg_key, '') ASC, IF(comments != '✔', '', msg_key), msg_key")->get();
-        $msg_key = "";
-        return view('trad::public.index', compact('langs', 'messages', 'msg_key'));
+        return $this->show("");
     }
 
     public function show($msg_key) {
         $this->configDatabase();
         $langs = Langs::on("messages")->get();
-        $messages = Messages::on("messages")->orderByRaw("IF(msg_key = msg_en OR ((msg_en = '' OR msg_en is null) AND msg_fr != ''), msg_key, '') DESC, IF(comments != '✔', '', msg_key), msg_key")->get();
+        $messages = Messages::on("messages")->where("msg_fr", "!=", "")->orderByRaw("IF(msg_key = msg_en OR ((msg_en = '' OR msg_en is null) AND msg_fr != ''), msg_key, '') DESC, IF(comments != '✔', '', msg_key), msg_key")->get();
         return view('trad::public.index', compact('langs', 'messages', 'msg_key'));
     }
 
@@ -53,9 +49,13 @@ class PublicController extends Controller
         $langs = Langs::on("messages")->get();
         $content = [];
         foreach($langs as $lang) {
-            $content["msg_" . $lang->lang_key] = $request->{ "msg_" . $lang->lang_key };
+            if($lang->lang_key != "fr") // no updated of french
+                $content["msg_" . $lang->lang_key] = $request->{ "msg_" . $lang->lang_key };
         }
-        Messages::on("messages")->where("msg_key", "=", $request->msg_key)->update($content);
+        if($content["msg_en"] != null && $content["msg_en"] != "" && $request["comments"] == "V2") {// set english
+            $content["comments"] = "V3 Automatique";
+        }
+        Messages::on("messages")->where("id", "=", $request->id)->update($content);
         return json_encode([ "result" => "200" ]);
     }
 }

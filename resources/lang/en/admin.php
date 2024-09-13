@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'title' => 'Internal stats',
-    'index' => 'Internal stats',
-    'infos' => 'Informations',
-    'updated' => 'Updated',
-    'created' => 'Created',
-    'deleted' => 'Deleted'
+    'title' => 'Translation',
+    'setting' => [
+        'per_page' => 'Message per page',
+        'default_lang_id' => 'Default language',
+        'updated' => 'Configuration updated!'
+    ]
 ];

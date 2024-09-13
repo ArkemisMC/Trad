@@ -10,7 +10,6 @@ return [
         'title' => 'Messages',
         'msg_key' => 'Clé',
         'msg_lang' => 'Valeur en :lang',
-        'comments' => 'Commentaire',
-        'accept' => 'Accepter la suggestion'
+        'comments' => 'Commentaire'
     ]
 ];

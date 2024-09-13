@@ -3,7 +3,6 @@
 namespace Azuriom\Plugin\Trad\Providers;
 
 use Azuriom\Extensions\Plugin\BasePluginServiceProvider;
-use Illuminate\Support\Facades\Route;
 use Azuriom\Models\Permission;
 
 class TradServiceProvider extends BasePluginServiceProvider
@@ -36,8 +35,7 @@ class TradServiceProvider extends BasePluginServiceProvider
 
         Permission::registerPermissions([
             'trad.admin' => 'trad::permissions.admin',
-            'trad.public' => 'trad::permissions.public',
-            'trad.accept' => 'trad::permissions.accept',
+            'trad.public' => 'trad::permissions.public'
         ]);
     }
 

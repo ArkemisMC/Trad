@@ -40,6 +40,7 @@
                             @foreach($messages as $msg)
                                 <p class="message @if($msg->msg_key == $msg->msg_fr || $msg->msg_fr == null || $msg->msg_en == null) empty-message @else checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')"
                                     data-comments="{{ $msg->comments }}" id="left-msg-{{ $msg->msg_key }}"
+                                    data-msgid="{{ $msg->id }}"
                                     @foreach($langs as $lang)
                                         data-msg_{{ $lang->lang_key }}="{{ $msg->{ 'msg_' . $lang->lang_key } }}"
                                     @endforeach
@@ -50,6 +51,7 @@
                         </div>
                         <div class="col-7">
                             <div class="mb-3" style="display: flex;">
+                                <input type="hidden" id="msgid">
                                 <div class="form-left">
                                     <label class="form-label" for="msg_key">{{ trans('trad::public.msgs.msg_key') }}</label>
                                     <input type="text" class="form-control" id="msg_key" name="msg_key" readonly>
@@ -62,17 +64,15 @@
                             @foreach($langs as $lang)
                                 <div class="mb-3">
                                     <label class="form-label" for="msg_{{ $lang->lang_key }}">{{ trans('trad::public.msgs.msg_lang', ['lang' => $lang->lang_name]) }}</label>
-                                    <textarea class="form-control" id="msg_{{ $lang->lang_key }}" name="msg_{{ $lang->lang_key }}"></textarea>
+                                    <textarea class="form-control" id="msg_{{ $lang->lang_key }}" name="msg_{{ $lang->lang_key }}" {{ $lang->lang_key == "fr" ? "readonly disabled" : "" }}></textarea>
                                 </div>
                             @endforeach
                             <div class="mb-3">
-                                @if(Auth::user()->can('trad.accept'))
-                                    <p style="display: flex;">
-                                        <button class="btn btn-success" style="margin-left: 8px;" onclick="saveMessage()">
-                                            <i class="bi bi-save"></i>
-                                        </button>
-                                    </p>
-                                @endif
+                                <p style="display: flex;">
+                                    <button class="btn btn-success" style="margin-left: 8px;" onclick="saveMessage()">
+                                        <i class="bi bi-save"></i>
+                                    </button>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -123,6 +123,7 @@
                 document.getElementById("msg_{{ $lang->lang_key }}").value = parseFormatting(d.msg_{{ $lang->lang_key }});
             @endforeach
             document.getElementById("comments").value = d.comments;
+            document.getElementById("msgid").value = d.msgid;
 
             if(msg != undefined && d.msg_value != "" && d.msg_value != d.msg_key && removeOld)
             msg.remove();
@@ -130,17 +131,15 @@
         if(msg_key != "")
             setTimeout(() => selectMessage(msg_key), 100);
 
-        @if(Auth::user()->can('trad.accept'))
-            function saveMessage() {
-                var params = { msg_key: msg_key };
-                @foreach($langs as $lang)
-                    params["msg_{{ $lang->lang_key }}"] = getMessage('msg_{{ $lang->lang_key }}');
-                @endforeach
-                axios.post('{{ route("trad.save") }}', params).then((response) => {
-                    nextMessage(msg_key);
-                })
-            }
-        @endif
+        function saveMessage() {
+            var params = { msg_key: msg_key, id: document.getElementById("msgid").value, comments: document.getElementById("comments").value };
+            @foreach($langs as $lang)
+                params["msg_{{ $lang->lang_key }}"] = getMessage('msg_{{ $lang->lang_key }}');
+            @endforeach
+            axios.post('{{ route("trad.save") }}', params).then((response) => {
+                nextMessage(msg_key);
+            })
+        }
 
         function selectWikiPage(href, replaceState = false) {
             /*const tab = bootstrap.Tab.getOrCreateInstance(element);
