@@ -38,7 +38,7 @@
                             <?php
                             ?>
                             @foreach($messages as $msg)
-                                <p class="message @if($msg->msg_key == $msg->msg_fr || $msg->msg_fr == null || $msg->msg_en == null) empty-message @else checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')"
+                                <p class="message @if($msg->msg_key == $msg->msg_fr || $msg->msg_key == $msg->msg_en || $msg->msg_fr == null || $msg->msg_fr == '' || $msg->msg_en == null) empty-message @else checked-message @endif" onclick="selectMessage('{{ $msg->msg_key }}')"
                                     data-comments="{{ $msg->comments }}" id="left-msg-{{ $msg->msg_key }}"
                                     data-msgid="{{ $msg->id }}"
                                     @foreach($langs as $lang)
