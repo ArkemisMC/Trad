@@ -17,10 +17,9 @@ class Localization
      */
     public function handle($request, Closure $next): Response
     {
-        exit(json_encode($request->user));
         if ($request->user()) { // if logged
             if ($request->user()->locale) {// check if locale have been set
-                app()->setLocale($request->user()->locale); // set locale is found
+                app()->setLocale($request->user()->locale); // set locale if found
                 return $next($request);
             }
         }

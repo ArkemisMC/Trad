@@ -7,14 +7,6 @@ use Azuriom\Models\Permission;
 
 class TradServiceProvider extends BasePluginServiceProvider
 {
-    /**
-     * The plugin's global HTTP middleware stack.
-     *
-     * @var array
-     */
-    protected array $middleware = [
-        \Azuriom\Plugin\Trad\Middleware\Localization::class
-    ];
 
     /**
      * Register any plugin services.
@@ -23,7 +15,7 @@ class TradServiceProvider extends BasePluginServiceProvider
      */
     public function register()
     {
-        $this->middleware($this->middleware, true);
+        $this->router->pushMiddlewareToGroup("web", \Azuriom\Http\Middleware\Localization::class);
     }
 
     /**
